@@ -55,10 +55,10 @@ class Robot(Problem):
             new_collected_m2 = collected_m2
 
             if new_position in self.parts_m1 and new_position not in collected_m1 and not m1_fixed:
-                new_collected_m1 = tuple(collected_m1+ (new_position,))
+                new_collected_m1 = tuple(sorted(collected_m1 + (new_position,)))
 
             if new_position in self.parts_m2 and new_position not in collected_m2 and m1_fixed and not m2_fixed:
-                new_collected_m2 = tuple(collected_m2 + (new_position,))
+                new_collected_m2 = tuple(sorted(collected_m2 + (new_position,)))
 
             successors["Right"] = (new_position, new_collected_m1, new_collected_m2, m1_fixed, m2_fixed, 0)
 
@@ -69,10 +69,10 @@ class Robot(Problem):
             new_collected_m2 = collected_m2
 
             if new_position in self.parts_m1 and new_position not in collected_m1 and not m1_fixed:
-                new_collected_m1 = tuple(collected_m1+ (new_position,))
+                new_collected_m1 = tuple(sorted(collected_m1 + (new_position,)))
 
             if new_position in self.parts_m2 and new_position not in collected_m2 and m1_fixed and not m2_fixed:
-                new_collected_m2 = tuple(collected_m2 + (new_position,))
+                new_collected_m2 = tuple(sorted(collected_m2 + (new_position,)))
 
             successors["Left"] = (new_position, new_collected_m1, new_collected_m2, m1_fixed, m2_fixed, 0)
 
@@ -83,10 +83,10 @@ class Robot(Problem):
             new_collected_m2 = collected_m2
 
             if new_position in self.parts_m1 and new_position not in collected_m1 and not m1_fixed:
-                new_collected_m1 = tuple(collected_m1 + (new_position,))
+                new_collected_m1 = tuple(sorted(collected_m1 + (new_position,)))
 
             if new_position in self.parts_m2 and new_position not in collected_m2 and m1_fixed and not m2_fixed:
-                new_collected_m2 = tuple(collected_m2 + (new_position,))
+                new_collected_m2 = tuple(sorted(collected_m2 + (new_position,)))
 
             successors["Up"] = (new_position, new_collected_m1, new_collected_m2, m1_fixed, m2_fixed, 0)
 
@@ -97,10 +97,10 @@ class Robot(Problem):
             new_collected_m2 = collected_m2
 
             if new_position in self.parts_m1 and new_position not in collected_m1 and not m1_fixed:
-                new_collected_m1 = tuple(collected_m1 + (new_position,))
+                new_collected_m1 = tuple(sorted(collected_m1 + (new_position,)))
 
             if new_position in self.parts_m2 and new_position not in collected_m2 and m1_fixed and not m2_fixed:
-                new_collected_m2 = tuple(collected_m2 + (new_position,))
+                new_collected_m2 = tuple(sorted(collected_m2 + (new_position,)))
 
             successors["Down"] = (new_position, new_collected_m1, new_collected_m2, m1_fixed, m2_fixed, 0)
 
@@ -129,3 +129,29 @@ class Robot(Problem):
             successors["Repair"] = (robot_pos, collected_m1, collected_m2, m1_fixed, new_m2_fixed, new_count)
 
         return successors
+if __name__ == '__main__':
+    robot_start_pos = tuple(map(int, input().split(',')))
+    M1_pos = tuple(map(int, input().split(',')))
+    M1_steps = int(input())
+    M2_pos = tuple(map(int, input().split(',')))
+    M2_steps = int(input())
+
+    parts_M1 = int(input())
+    to_collect_M1 = tuple(tuple(map(int, input().split(','))) for _ in range(parts_M1))
+
+    parts_M2 = int(input())
+    to_collect_M2 = tuple(tuple(map(int, input().split(','))) for _ in range(parts_M2))
+
+    walls = [(4,0),(5,0),(7,5),(8,5),(9,5),(1,6),(1,7),(0,6),(0,8),(0,9),(1,9),(2,9),(3,9)]
+
+    initial_state = (robot_start_pos, tuple(), tuple(), False, False, 0)
+
+    problem = Robot(initial_state, M1_pos, M2_pos, M1_steps, M2_steps, to_collect_M1, to_collect_M2, walls)
+
+    result = breadth_first_graph_search(problem)
+
+    if result is not None:
+        print(result.solution())
+    else:
+        print("No Solution!")
+
